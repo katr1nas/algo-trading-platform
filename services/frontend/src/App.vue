@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { getRSI } from "./services/api.js";
+import { getRSI, getOHLC } from "./services/api.js";
 
 const closeData = ref("");
 const period = ref(14);

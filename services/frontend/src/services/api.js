@@ -1,9 +1,20 @@
-export async function getRSI(close, period) {
-  const response = await fetch("http://localhost:8000/api/v1/indicators/rsi", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ close, period })
-  });
+import axios from "axios";
 
-  return await response.json();
+
+const api = axios.create({
+    baseURL: "http://localhost:8000/api/v1",
+    headers: {"Content-Type": "application/json"}
+});
+
+
+export async function getRSI(close, period) {
+  const {data} = await api.post("/indicators/rsi", { close, period});
+  return data;
+}
+
+export async function getOHLC(symbol, timeframe="1h") {
+    const { data } = await api.get("/price", {
+        params: {symbol, timeframe}
+    });
+    return data;
 }
