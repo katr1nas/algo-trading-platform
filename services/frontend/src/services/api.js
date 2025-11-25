@@ -18,3 +18,8 @@ export async function getOHLC(symbol, timeframe="1h") {
     });
     return data;
 }
+
+export async function gerRSIStrategy(rsi) {
+    const { data } = await api.post("/strategies/rsi-strategy", { rsi });
+    return data;
+}

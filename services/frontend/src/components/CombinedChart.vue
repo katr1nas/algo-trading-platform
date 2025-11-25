@@ -11,7 +11,10 @@ const props = defineProps({
 <template>
     <div>
         <div> style="height:400px; margin-bottomo:20px;">
-            <PriceChart :data="price" />
+            <PriceChart 
+            :data="price" 
+            :buySignals="buySignals"
+            :sellSignals="sellSignals"/>
         </div>
 
         <div style="height:200px;">
