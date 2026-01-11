@@ -1,22 +1,24 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.routes import router as api_router
+# ==================== File: app/api/v1/routes.py ====================
+from fastapi import APIRouter
+from app.api.v1.endpoints import indicators, strategies, data
 
-from app.api.v1.endpoints import indicators as indicators_router
-from app.api.v1.endpoints import ohlcv as ohlcv_router
+router = APIRouter()
 
-
-app = FastAPI(title="Algorithmic Trading Research Platform")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],   # allow all origins
-    allow_credentials=True,
-    allow_methods=["*"],   # allow all HTTP methods
-    allow_headers=["*"],   # allow all headers
+# Include all endpoint routers
+router.include_router(
+    indicators.router,
+    prefix="/indicators",
+    tags=["Technical Indicators"]
 )
 
-app.include_router(api_router, prefix="/api/v1")
-app.include_router(indicators_router.router, prefix="/api/v1/indicators")
-app.include_router(ohlcv_router.router, prefix="/api/v1")
+router.include_router(
+    strategies.router,
+    prefix="/strategies",
+    tags=["Trading Strategies"]
+)
 
+router.include_router(
+    data.router,
+    prefix="/data",
+    tags=["Market Data"]
+)

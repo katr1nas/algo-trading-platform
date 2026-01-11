@@ -1,41 +1,23 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
-import pandas as pd
+from app.api.v1.endpoints import indicators, strategies, data
 
 router = APIRouter()
 
-class PriceData(BaseModel):
-    close: list
-    period: int
+# Include all endpoint routers
+router.include_router(
+    indicators.router,
+    prefix="/indicators",
+    tags=["Technical Indicators"]
+)
 
-def compute_rsi(close, period):
-    df = pd.DataFrame(close, columns=["close"])
-    delta = df["close"].diff()
-    gain = delta.clip(lower=0)
-    loss = -delta.clip(upper=0)
+router.include_router(
+    strategies.router,
+    prefix="/strategies",
+    tags=["Trading Strategies"]
+)
 
-    avg_gain = gain.rolling(period).mean()
-    avg_loss = loss.rolling(period).mean()
-
-    rs = avg_gain / avg_loss
-
-    rsi = 100 - (100 / (1 + rs))
-    return rsi.fillna(0).tolist()
-
-@router.post("/indicators/rsi")
-def rsi_endpoint(data: PriceData):
-    result = compute_rsi(data.close, data.period)
-    return {"rsi": result}
-
-@router.get("/status")
-def status():
-    return {"status": "ok"}
-
-@router.get("/strategies/list")
-def get_strategies():
-    return [
-        {"name": "mean_reversion", "description": "Simple MR strategy"},
-        {"name": "breakout", "description": "Basic breakout logic"}
-    ]
-
-
+router.include_router(
+    data.router,
+    prefix="/data",
+    tags=["Market Data"]
+)
